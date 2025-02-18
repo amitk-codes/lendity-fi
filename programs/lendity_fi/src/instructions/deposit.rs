@@ -1,7 +1,8 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{associated_token::AssociatedToken, token_interface::{
-    transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked,
-}};
+use anchor_spl::{
+    associated_token::AssociatedToken,
+    token_interface::{transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked},
+};
 
 use crate::{Bank, User};
 
@@ -43,7 +44,7 @@ pub struct Deposit<'info> {
 
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
-    pub associated_token_program: Program<'info, AssociatedToken>
+    pub associated_token_program: Program<'info, AssociatedToken>,
 }
 
 pub fn deposit_handler(ctx: Context<Deposit>, amount: u64) -> Result<()> {
