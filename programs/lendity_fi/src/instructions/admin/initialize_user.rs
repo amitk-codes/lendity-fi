@@ -19,7 +19,7 @@ pub struct InitializeUser<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn initialize_user_handler(ctx: Context<InitializeUser>, usdc_address: u64) -> Result<()> {
+pub fn initialize_user_handler(ctx: Context<InitializeUser>, usdc_address: Pubkey) -> Result<()> {
     let user_account = &mut ctx.accounts.user_account;
     user_account.owner = ctx.accounts.signer.key();
     user_account.usdc_address = usdc_address;
