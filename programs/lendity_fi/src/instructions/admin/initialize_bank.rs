@@ -44,5 +44,6 @@ pub fn initialize_bank_handler(
     bank.mint_address = ctx.accounts.mint.key();
     bank.max_ltv = max_ltv;
     bank.liquidation_threshold = liquidation_threshold;
+    bank.interest_rate = 0.05;
     Ok(())
 }
