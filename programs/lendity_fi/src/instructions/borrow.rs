@@ -151,6 +151,8 @@ pub fn borrow_handler(ctx: Context<Borrow>, amount: u64) -> Result<()> {
     bank.total_borrowed += amount;
     bank.total_borrowed_shares += user_shares;
 
+    user.last_updated_borrowed = Clock::get()?.unix_timestamp;
+
     Ok(())
 }
 
