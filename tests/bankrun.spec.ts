@@ -5,6 +5,8 @@ import { ProgramTestContext, startAnchor } from "solana-bankrun";
 import { BankrunContextWrapper } from "../bankrun-utils/bankrunConnection";
 import { LendityFi } from "../target/types/lendity_fi";
 import LendityFiIdl from "../target/idl/lendity_fi.json"
+import { DEVNET_RPC_ENDPOINT, PYTH_PUBLIC_ADDRESS, SOL_USD_PRICE_FEED_ID_HEX } from "../bankrun-utils/constants"
+import { createMint } from "spl-token-bankrun"
 
 describe("Lendity-Fi", () => {
   const web3 = anchor.web3;
@@ -14,6 +16,8 @@ describe("Lendity-Fi", () => {
   let context: ProgramTestContext;
   let provider: BankrunProvider;
   let program: anchor.Program<LendityFi>;
+  let signer: anchor.web3.Keypair
+  let usdcMint: anchor.web3.PublicKey;
 
   beforeAll(async () => {
     const pythAccountInfo = await devnetConnection.getAccountInfo(pyth);
@@ -46,5 +50,22 @@ describe("Lendity-Fi", () => {
     context.setAccount(solUsdFeedAccountPublicKey, solUsdFeedAccountInfo);
 
     program = new anchor.Program<LendityFi>(LendityFiIdl as LendityFi, provider);
+
+    const banksClient = context.banksClient;
+    signer = provider.wallet.payer;
+
+    // @ts-ignore
+    usdcMint = await createMint(banksClient, signer, signer.publicKey, null, 2);
+
   });
+
+  test("Initializes the user account", async() => {
+    const initUserTx = await program.methods
+      .initializeUser(usdcMint)
+      .accounts({signer: signer.publicKey})
+      .rpc();
+
+    console.log({initUserTx});
+    
+  })
 });
