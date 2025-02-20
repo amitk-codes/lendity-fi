@@ -12,7 +12,5 @@ pub enum ErrorCode {
     OverRepayAmount,
 
     #[msg("The account does not fall below the health factor, so can't be liquidated")]
-    DoesNotFallBelowHealthFactor
-
-
+    DoesNotFallBelowHealthFactor,
 }

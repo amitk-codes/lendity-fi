@@ -120,8 +120,11 @@ pub fn borrow_handler(ctx: Context<Borrow>, amount: u64) -> Result<()> {
         &[ctx.bumps.bank_token_account],
     ]];
 
-
-    let borrow_cpi_ctx = CpiContext::new(ctx.accounts.token_program.to_account_info(), borrow_transfer_accounts).with_signer(signer_seeds);
+    let borrow_cpi_ctx = CpiContext::new(
+        ctx.accounts.token_program.to_account_info(),
+        borrow_transfer_accounts,
+    )
+    .with_signer(signer_seeds);
     transfer_checked(borrow_cpi_ctx, amount, ctx.accounts.mint.decimals)?;
 
     // states update :-

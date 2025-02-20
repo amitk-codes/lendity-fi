@@ -93,8 +93,13 @@ pub fn repay_handler(ctx: Context<Repay>, amount: u64) -> Result<()> {
 
     // states update :-
 
-    let borrow_ratio = amount.checked_div(total_borrowed_with_interest_accumulated as u64).unwrap();
-    let user_shares = bank.total_borrowed_shares.checked_mul(borrow_ratio).unwrap();
+    let borrow_ratio = amount
+        .checked_div(total_borrowed_with_interest_accumulated as u64)
+        .unwrap();
+    let user_shares = bank
+        .total_borrowed_shares
+        .checked_mul(borrow_ratio)
+        .unwrap();
 
     match ctx.accounts.mint.to_account_info().key() {
         key if key == user.usdc_address => {
