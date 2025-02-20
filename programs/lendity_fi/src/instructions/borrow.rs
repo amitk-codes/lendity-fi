@@ -156,7 +156,7 @@ pub fn borrow_handler(ctx: Context<Borrow>, amount: u64) -> Result<()> {
     Ok(())
 }
 
-fn calculate_total_deposit_with_interest_accumulated(
+pub fn calculate_total_deposit_with_interest_accumulated(
     last_updated: i64,
     total_deposit: u64,
     interest_rate: f64,
