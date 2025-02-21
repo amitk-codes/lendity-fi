@@ -6,7 +6,7 @@ import { BankrunContextWrapper } from "../bankrun-utils/bankrunConnection";
 import { LendityFi } from "../target/types/lendity_fi";
 import LendityFiIdl from "../target/idl/lendity_fi.json"
 import { DEVNET_RPC_ENDPOINT, PYTH_PUBLIC_ADDRESS, SOL_USD_PRICE_FEED_ID_HEX } from "../bankrun-utils/constants"
-import { createMint, mintTo } from "spl-token-bankrun"
+import { createAccount, createMint, mintTo } from "spl-token-bankrun"
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 describe("Lendity-Fi", () => {
@@ -23,6 +23,7 @@ describe("Lendity-Fi", () => {
   let solMint: anchor.web3.PublicKey;
   let usdcTokenAccount: anchor.web3.PublicKey;
   let solTokenAccount: anchor.web3.PublicKey;
+  let solUsdFeedAccountAddress: string;
 
   beforeAll(async () => {
     const pythAccountInfo = await devnetConnection.getAccountInfo(pyth);
@@ -46,7 +47,7 @@ describe("Lendity-Fi", () => {
       connection: bankrunConnection.connection.toConnection()
     })
 
-    const solUsdFeedAccountAddress = pythSolanaReceiver.getPriceFeedAccountAddress(0, SOL_USD_PRICE_FEED_ID_HEX).toBase58();
+    solUsdFeedAccountAddress = pythSolanaReceiver.getPriceFeedAccountAddress(0, SOL_USD_PRICE_FEED_ID_HEX).toBase58();
 
     const solUsdFeedAccountPublicKey = new web3.PublicKey(solUsdFeedAccountAddress);
 
@@ -137,4 +138,30 @@ describe("Lendity-Fi", () => {
 
     console.log({ fundingSolTokenAccountTx });
   });
+
+  test("Creates and funds the user's USDC token account", async () => {
+    const USDCTokenAccountTx = await createAccount(
+      // @ts-ignores
+      banksClient,
+      signer,
+      usdcMint,
+      signer.publicKey
+    );
+
+    console.log({USDCTokenAccountTx});
+
+    const amount = 10_000 * web3.LAMPORTS_PER_SOL
+    const fundingUserUsdcTokenAccountTx = await mintTo(
+      // @ts-ignores
+      banksClient,
+      signer,
+      usdcMint,
+      usdcTokenAccount,
+      signer,
+      amount
+    );
+
+    console.log({fundingUserUsdcTokenAccountTx});
+  });
+
 });
